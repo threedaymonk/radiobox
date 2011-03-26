@@ -19,7 +19,7 @@ get "/" do
 end
 
 get "/track-info/:track" do
-  track = params["track"]
+  track = params["track"].to_i
   JSON.dump({
     :track => soundcloud.track(track),
     :comments => soundcloud.comments(track)
