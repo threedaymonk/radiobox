@@ -1,6 +1,6 @@
 $('document').ready(function(){
   var CommentSet = function(comments){
-    this._comments = _.reduce(window.comments, function(a, e){
+    this._comments = _.reduce(comments, function(a, e){
       if (!a[e.timestamp]) { a[e.timestamp] = []; }
       a[e.timestamp].push(e);
       return a;
@@ -31,8 +31,19 @@ $('document').ready(function(){
     }
   };
 
-  var commentSet = new CommentSet(window.comments);
+  var flickrSet = new CommentSet(_.select(window.comments, function(a){
+    return a.type === "flickr";
+  }));
+
+  var commentSet = new CommentSet(_.select(window.comments, function(a){
+    return a.type !== "flickr";
+  }));
+
+  flickrSet.poll('#player', function(cs) {
+    console.log(["flickr", cs]);
+  }, 500);
+
   commentSet.poll('#player', function(cs) {
-    console.log(cs);
+    console.log(["comment", cs]);
   }, 500);
 });
