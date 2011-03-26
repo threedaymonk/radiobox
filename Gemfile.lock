@@ -1,0 +1,23 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    dalli (1.0.3)
+    json (1.4.6)
+    rack (1.2.2)
+    sinatra (1.2.1)
+      rack (~> 1.1)
+      tilt (>= 1.2.2, < 2.0)
+    slim (0.9.1)
+      temple (~> 0.1.8)
+      tilt (~> 1.2)
+    temple (0.1.8)
+    tilt (1.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dalli
+  json
+  sinatra
+  slim
