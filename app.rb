@@ -26,6 +26,11 @@ get "/track/:track" do
   slim :track
 end
 
+get "/track/:artist/:song" do
+  track_id = soundcloud.resolve(params["artist"], params["song"])
+  redirect "/track/#{track_id}"
+end
+
 get "/stream/:track" do
   track_id = params["track"].to_i
   track    = soundcloud.track(track_id)
