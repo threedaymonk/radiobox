@@ -2,23 +2,37 @@ require "open-uri"
 require "json"
 require "net/http"
 require "uri"
+require "set"
 
 module Soundcloud
-  class CommentCleaner
-    USER_WHITELIST = ["Jelion", "saidfm", "chris-lowis"]
-
-    def self.clean(comments)
-      new_comments = []
-      comments.map do |c|
-        new_comments << {
-          :body => c["body"],
-          :type => self.type(c["body"])
-        } if USER_WHITELIST.include? c["user"]["username"]
-      end
-      new_comments
+  module UserWhitelist
+    def whitelist
+      @whitelist ||= Set.new
     end
 
-    def self.type(comment)
+    def include?(user)
+      whitelist.include?(user)
+    end
+
+    def add(user)
+      whitelist << user
+    end
+
+    extend self
+  end
+
+  module CommentCleaner
+    def clean(comments)
+      comments.select{ |c|
+        Soundcloud::UserWhitelist.include?(c["user"]["username"])
+      }.map{ |c| {
+        :body => c["body"],
+        :type => type(c["body"]),
+        :timestamp => c["timestamp"]
+      }}
+    end
+
+    def type(comment)
       case comment
       when /flickr.com/
         :flickr
@@ -28,6 +42,8 @@ module Soundcloud
         :text
       end
     end
+
+    extend self
   end
 
   class API

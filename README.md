@@ -3,7 +3,7 @@ Getting started
 
     bundle install
 
-    SOUNDCLOUD_CLIENT_ID=$YOUR_ID bundle exec rackup -p 9292 config.ru
+    SOUNDCLOUD_CLIENT_ID=$YOUR_ID SOUNDCLOUD_USER_WHITELIST="foo bar" bundle exec rackup -p 9292 config.ru
 
 Then visit [http://localhost:9292/](http://localhost:9292/).
 

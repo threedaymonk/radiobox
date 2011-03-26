@@ -9,6 +9,9 @@ require "soundcloud"
 require "http"
 
 soundcloud = Cache.new.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))
+ENV["SOUNDCLOUD_USER_WHITELIST"].split(/ /).each do |user|
+  Soundcloud::UserWhitelist.add user
+end
 
 Slim::Engine.set_default_options :pretty => true
 
