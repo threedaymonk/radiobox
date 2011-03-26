@@ -2,8 +2,8 @@ require "dalli"
 require "digest/sha1"
 
 class Cache
-  def initialize(connection="localhost:11211")
-    @client = Dalli::Client.new(connection)
+  def initialize
+    @client = Dalli::Client.new
   end
 
   def get(k)
