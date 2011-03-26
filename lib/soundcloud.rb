@@ -18,11 +18,15 @@ module Soundcloud
     end
 
     def url(*u)
-      "#{ROOT}/#{u.join("/")}.json?consumer_key=#{@client_id}"
+      "#{ROOT}/#{u.join("/")}.json"
+    end
+
+    def auth(url)
+      "#{url}?consumer_key=#{@client_id}"
     end
 
     def get(*u)
-      open url(*u) do |f|
+      open auth(url(*u)) do |f|
         JSON.parse(f.read)
       end
     end

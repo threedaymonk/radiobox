@@ -6,6 +6,7 @@ require "sinatra"
 require "slim"
 require "cache"
 require "soundcloud"
+require "http"
 
 soundcloud = Cache.new.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))
 
@@ -18,10 +19,24 @@ get "/" do
   slim :index
 end
 
+get "/track/:track" do
+  @track_id   = params["track"].to_i
+  @track_info = soundcloud.track(@track_id)
+  @comments   = soundcloud.comments(@track_id)
+  slim :track
+end
+
+get "/stream/:track" do
+  track_id = params["track"].to_i
+  track    = soundcloud.track(track_id)
+  stream   = soundcloud.auth(track["stream_url"])
+  redirect HTTP.head(stream)["Location"]
+end
+
 get "/track-info/:track" do
-  track = params["track"].to_i
+  track_id = params["track"].to_i
   JSON.dump({
-    :track => soundcloud.track(track),
-    :comments => soundcloud.comments(track)
+    :track    => soundcloud.track(track_id),
+    :comments => soundcloud.comments(track_id)
   })
 end
