@@ -8,7 +8,8 @@ require "cache"
 require "soundcloud"
 require "http"
 
-soundcloud = Cache.new.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))
+cache = Cache.new(`git log | head -n 1 | cut -d' ' -f 2`)
+soundcloud = cache.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))
 
 ENV["SOUNDCLOUD_USER_WHITELIST"].split(/ /).each do |user|
   Soundcloud::UserWhitelist.add user

@@ -2,8 +2,9 @@ require "dalli"
 require "digest/sha1"
 
 class Cache
-  def initialize
+  def initialize(version_key)
     @client = Dalli::Client.new
+    @version_key = version_key
   end
 
   def get(k)
@@ -15,7 +16,7 @@ class Cache
   end
 
   def make_key(k)
-    Digest::SHA1.hexdigest(k)
+    Digest::SHA1.hexdigest(k + @version_key)
   end
 
   def wrap(object)
