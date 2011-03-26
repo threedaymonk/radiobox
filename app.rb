@@ -22,7 +22,7 @@ end
 get "/track/:track" do
   @track_id   = params["track"].to_i
   @track_info = soundcloud.track(@track_id)
-  @comments   = soundcloud.comments(@track_id)
+  @comments   = soundcloud.clean_comments(@track_id)
   slim :track
 end
 

@@ -4,6 +4,32 @@ require "net/http"
 require "uri"
 
 module Soundcloud
+  class CommentCleaner
+    USER_WHITELIST = ["Jelion", "saidfm", "chris-lowis"]
+
+    def self.clean(comments)
+      new_comments = []
+      comments.map do |c|
+        new_comments << {
+          :body => c["body"],
+          :type => self.type(c["body"])
+        } if USER_WHITELIST.include? c["user"]["username"]
+      end
+      new_comments
+    end
+
+    def self.type(comment)
+      case comment
+      when /flickr.com/
+        :flickr
+      when /dbpedia.org/
+        :dbpedia
+      else
+        :text
+      end
+    end
+  end
+
   class API
     ROOT = "http://api.soundcloud.com"
 
@@ -13,6 +39,10 @@ module Soundcloud
 
     def track(track_id)
       get("tracks", track_id)
+    end
+
+    def clean_comments(track_id)
+      CommentCleaner.clean(comments(track_id))
     end
 
     def comments(track_id)
