@@ -1,29 +1,38 @@
 $('document').ready(function(){
-  var comments = _.reduce(window.comments, function(a, e){
-    if (!a[e.timestamp]) { a[e.timestamp] = []; }
-    a[e.timestamp].push(e);
-    return a;
+  var CommentSet = function(comments){
+    this._comments = _.reduce(window.comments, function(a, e){
+      if (!a[e.timestamp]) { a[e.timestamp] = []; }
+      a[e.timestamp].push(e);
+      return a;
     }, {});
 
-  var timestamps = _.map(_.keys(comments), function(a){ return parseInt(a, 10); });
-
-  var currentComment = null;
-
-  var loadComment = function(comment) {
-    console.log(comment);
+    this._timestamps = _.map(_.keys(this._comments), function(a){ return parseInt(a, 10); });
+    this._currentComment = null;
+    this._updateComments();
   };
 
-  var updateComments = function(){
-    var offset = $('#player')[0].currentTime * 1000;
-    var before = _.select(timestamps, function(a){
-      return a <= offset;
-    });
-    var latest = (before.length > 0) ? _.max(before) : _.min(timestamps);
-    if (latest !== currentComment) {
-      currentComment = latest;
-      loadComment(comments[latest]);
+  CommentSet.prototype.poll = function(selector, callback, interval){
+    var periodic = function(){
+      setTimeout(periodic, interval)
+      this._updateComments(selector, callback);
+    }.bind(this);
+    periodic();
+  };
+
+  CommentSet.prototype._updateComments = function(selector, callback){
+    var element = $(selector)[0];
+    if (!element) { return; }
+    var offset = element.currentTime * 1000;
+    var before = _.select(this._timestamps, function(a){ return a <= offset; });
+    var latest = (before.length > 0) ? _.max(before) : _.min(this._timestamps);
+    if (latest !== this._currentComment) {
+      this._currentComment = latest;
+      callback(this._comments[latest]);
     }
-    setTimeout(updateComments, 500);
   };
-  updateComments();
+
+  var commentSet = new CommentSet(window.comments);
+  commentSet.poll('#player', function(cs) {
+    console.log(cs);
+  }, 500);
 });
