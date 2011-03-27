@@ -39,13 +39,35 @@ $('document').ready(function(){
     return a.type !== "flickr";
   }));
 
+  var setBackgroundScale = function(){
+    var w = $(window),
+        e = $('#background'),
+        wa = w.width() / w.height(),
+        ea = e.width() / e.height();
+    if (ea > wa) {
+      e.css('height', '100%').
+        css('width',  'auto').
+        css('top',    '0').
+        css('left',   (w.width() - e.width()) / 2 + 'px');
+    } else {
+      e.css('height', 'auto').
+        css('width',  '100%').
+        css('top',    (w.height() - e.height()) / 2 + 'px').
+        css('left',   '0');
+    }
+  };
+
   flickrSet.poll('#player', function(cs) {
     console.log(["flickr", cs]);
     $.ajax({
       url: '/flickr/' + cs[0].body,
       success: function(data){
         console.log(data);
-        $('#background')[0].setAttribute('src', data);
+        var im = new Image();
+        $(im).load(function(){
+          $('#background').attr('src', data);
+          setTimeout(setBackgroundScale, 1);
+        }).attr('src', data);
       }
     });
   }, 500);
@@ -67,4 +89,5 @@ $('document').ready(function(){
   }, 500);
 
   $(window).resize(centerContent);
+  $(window).resize(setBackgroundScale);
 });
