@@ -6,7 +6,7 @@ module Flickr
   class API
     BASE = "http://api.flickr.com/services/rest/"
     BLANK = "/blank.gif"
-    SIZES = ["Small", "Medium", "Medium 640", "Large", "Original"]
+    SIZES = ["Small", "Original", "Medium", "Medium 640", "Large"]
 
     def initialize(api_key)
       @api_key = api_key
