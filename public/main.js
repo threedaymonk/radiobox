@@ -31,6 +31,36 @@ $('document').ready(function(){
     }
   };
 
+  var Resolver = function(){
+    this._cache = {};
+  }
+
+  Resolver.prototype.fetch = function(comment, callback){
+    if (['wikipedia', 'dbpedia', 'flickr'].indexOf(comment.type) > -1) {
+      console.log(comment.type);
+      $.ajax({
+        url: '/' + comment.type + '/' + comment.body,
+        success: callback
+      });
+    } else {
+      callback(comment.body);
+    };
+  };
+
+  Resolver.prototype.resolve = function(comment, callback){
+    var cached = this._cache[comment.id];
+    if (cached) {
+      console.log("from cache");
+      callback(cached);
+    } else {
+      console.log("from live");
+      this.fetch(comment, function(data){
+        this._cache[comment.id] = data;
+        callback(data);
+      }.bind(this));
+    }
+  };
+
   var flickrSet = new CommentSet(_.select(window.comments, function(a){
     return a.type === "flickr";
   }));
@@ -38,6 +68,8 @@ $('document').ready(function(){
   var commentSet = new CommentSet(_.select(window.comments, function(a){
     return a.type !== "flickr";
   }));
+
+  var resolver = new Resolver();
 
   var setBackgroundScale = function(){
     var w = $(window),
@@ -58,15 +90,13 @@ $('document').ready(function(){
   };
 
   flickrSet.poll('#player', function(cs) {
-    $.ajax({
-      url: '/flickr/' + cs[0].body,
-      success: function(data){
-        var im = new Image();
-        $(im).load(function(){
-          $('#background').attr('src', data);
-          setTimeout(setBackgroundScale, 1);
-        }).attr('src', data);
-      }
+    var comment = cs[0];
+    resolver.resolve(comment, function(data){
+      var im = new Image();
+      $(im).load(function(){
+        $('#background').attr('src', data);
+        setTimeout(setBackgroundScale, 1);
+      }).attr('src', data);
     });
   }, 500);
 
@@ -79,29 +109,11 @@ $('document').ready(function(){
   };
 
   commentSet.poll('#player', function(cs) {
-    switch (cs[0].type) {
-      case "wikipedia":
-        $.ajax({
-          url: '/wikipedia/' + cs[0].body,
-          success: function(data){
-            $('#content').text(data).attr('class', cs[0].type);
-          }
-        });
-        break;
-      case "dbpedia":
-        $.ajax({
-          url: '/dbpedia/' + cs[0].body,
-          success: function(data){
-            $('#content').text(data).attr('class', cs[0].type);
-          }
-        });
-        break;
-      default:
-        var elements = $('#content');
-        elements.attr('class', cs[0].type);
-        elements.text(cs[0].body);
-        centerContent();
-    }
+    var comment = cs[0];
+    resolver.resolve(comment, function(data){
+      $('#content').text(data).attr('class', comment.type);
+      centerContent();
+    });
   }, 500);
 
   $(window).resize(centerContent);
