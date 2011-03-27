@@ -55,6 +55,10 @@ get "/wikipedia/*" do
   wikipedia.comment(params[:splat].first)
 end
 
+get "/dbpedia/*" do
+  wikipedia.comment(params[:splat].first)
+end
+
 get "/track-info/:track" do
   track_id = params["track"].to_i
   JSON.dump({
