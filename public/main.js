@@ -31,13 +31,16 @@ $('document').ready(function(){
     }
   };
 
+  CommentSet.prototype.each = function(callback){
+    _.each(_.values(this._comments), callback);
+  };
+
   var Resolver = function(){
     this._cache = {};
   }
 
   Resolver.prototype.fetch = function(comment, callback){
     if (['wikipedia', 'dbpedia', 'flickr'].indexOf(comment.type) > -1) {
-      console.log(comment.type);
       $.ajax({
         url: '/' + comment.type + '/' + comment.body,
         success: callback
@@ -50,10 +53,8 @@ $('document').ready(function(){
   Resolver.prototype.resolve = function(comment, callback){
     var cached = this._cache[comment.id];
     if (cached) {
-      console.log("from cache");
       callback(cached);
     } else {
-      console.log("from live");
       this.fetch(comment, function(data){
         this._cache[comment.id] = data;
         callback(data);
@@ -70,6 +71,17 @@ $('document').ready(function(){
   }));
 
   var resolver = new Resolver();
+
+  flickrSet.each(function(comments){
+    resolver.resolve(comments[0], function(data){
+      var im = new Image();
+      $(im).attr('src', data);
+    });
+  });
+
+  commentSet.each(function(comments){
+    resolver.resolve(comments[0], function(){});
+  });
 
   var setBackgroundScale = function(){
     var w = $(window),
