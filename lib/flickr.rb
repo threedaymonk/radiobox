@@ -22,13 +22,13 @@ module Flickr
         SIZES.index(n.attribute("label").value) || 0
       }.map{ |n|
         n.attribute("source").value
-      }.tap{ |n| p n }.last || BLANK
+      }.last || BLANK
     rescue RestClient::Exception => e
       BLANK
     end
 
     def photo_id_from_url(url)
-      url.split("/").last 
+      url.split("/").select{ |a| a =~ /^\d+$/ }.last
     end
 
     def query_string(params)
