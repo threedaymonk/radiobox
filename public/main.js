@@ -58,11 +58,9 @@ $('document').ready(function(){
   };
 
   flickrSet.poll('#player', function(cs) {
-    console.log(["flickr", cs]);
     $.ajax({
       url: '/flickr/' + cs[0].body,
       success: function(data){
-        console.log(data);
         var im = new Image();
         $(im).load(function(){
           $('#background').attr('src', data);
@@ -81,13 +79,11 @@ $('document').ready(function(){
   };
 
   commentSet.poll('#player', function(cs) {
-    console.log(["comment", cs]);
     switch (cs[0].type) {
       case "wikipedia":
         $.ajax({
           url: '/wikipedia/' + cs[0].body,
           success: function(data){
-            console.log(data);
             $('#content').text(data).attr('class', cs[0].type);
           }
         });
@@ -96,7 +92,6 @@ $('document').ready(function(){
         $.ajax({
           url: '/dbpedia/' + cs[0].body,
           success: function(data){
-            console.log(data);
             $('#content').text(data).attr('class', cs[0].type);
           }
         });
