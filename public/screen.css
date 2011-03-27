@@ -85,6 +85,7 @@ audio {
 #content.title {
   font-size: 200%;
 }
+#content.dbpedia,
 #content.wikipedia {
   font-size: 50%;
   text-align: left;

@@ -92,6 +92,15 @@ $('document').ready(function(){
           }
         });
         break;
+      case "dbpedia":
+        $.ajax({
+          url: '/dbpedia/' + cs[0].body,
+          success: function(data){
+            console.log(data);
+            $('#content').text(data).attr('class', cs[0].type);
+          }
+        });
+        break;
       default:
         var elements = $('#content');
         elements.attr('class', cs[0].type);
