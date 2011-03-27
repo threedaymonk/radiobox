@@ -13,7 +13,7 @@ $('document').ready(function(){
 
   CommentSet.prototype.poll = function(selector, callback, interval){
     var periodic = function(){
-      setTimeout(periodic, interval)
+      setTimeout(periodic, interval);
       this._updateComments(selector, callback);
     }.bind(this);
     periodic();
@@ -37,7 +37,7 @@ $('document').ready(function(){
 
   var Resolver = function(){
     this._cache = {};
-  }
+  };
 
   Resolver.prototype.fetch = function(comment, callback){
     if (['wikipedia', 'dbpedia', 'flickr'].indexOf(comment.type) > -1) {
@@ -47,7 +47,7 @@ $('document').ready(function(){
       });
     } else {
       callback(comment.body);
-    };
+    }
   };
 
   Resolver.prototype.resolve = function(comment, callback){
