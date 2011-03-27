@@ -81,6 +81,7 @@ audio {
   width: 80%;
   background: rgba(0,100,100,0.75);
   opacity: 0.8;
+  -webkit-border-radius: 0.2em;
 }
 #content.title {
   font-size: 200%;
@@ -89,4 +90,6 @@ audio {
 #content.wikipedia {
   font-size: 50%;
   text-align: left;
+  padding: 0.5em;
+  line-height: 1.3em;
 }
