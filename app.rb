@@ -12,6 +12,7 @@ require "http"
 cache = Cache.new(`git log | head -n 1 | cut -d' ' -f 2`)
 soundcloud = cache.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))
 flickr = cache.wrap(Flickr::API.new(ENV["FLICKR_API_KEY"]))
+wikipedia = cache.wrap(Wikipedia::API.new())
 
 ENV["SOUNDCLOUD_USER_WHITELIST"].split(/ /).each do |user|
   Soundcloud::UserWhitelist.add user
@@ -42,6 +43,10 @@ end
 
 get "/flickr/*" do
   flickr.original_image(params[:splat].first)
+end
+
+get "/wikipedia/*" do
+  wikipedia.comment(params[:splat].first)
 end
 
 get "/track-info/:track" do
