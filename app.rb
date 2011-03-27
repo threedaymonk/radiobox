@@ -31,6 +31,12 @@ get "/track/:track" do
   @track_id   = params["track"].to_i
   @track_info = soundcloud.track(@track_id)
   @comments   = soundcloud.clean_comments(@track_id)
+  @comments.unshift(
+    :body => @track_info["user"]["username"] + ": " + @track_info["title"],
+    :type => "title",
+    :timestamp => 0,
+    :id => 0
+  )
   stream      = soundcloud.auth(@track_info["stream_url"])
   @stream_src = HTTP.head(stream)["Location"]
   slim :track

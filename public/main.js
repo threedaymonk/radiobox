@@ -50,7 +50,21 @@ $('document').ready(function(){
     });
   }, 500);
 
+  var centerContent = function() {
+    $('body').css('font-size', $(window).height() / 16 + 'px');
+    var el = $('#content');
+    el.css('position', 'absolute').
+       css('left', (($(window).width()  / 2) - (el.width()  / 2)) + 'px').
+       css('top',  (($(window).height() / 2) - (el.height() / 2)) + "px");
+  };
+
   commentSet.poll('#player', function(cs) {
     console.log(["comment", cs]);
+    var elements = $('#content');
+    elements.attr('class', cs[0].type);
+    elements.text(cs[0].body);
+    centerContent();
   }, 500);
+
+  $(window).resize(centerContent);
 });

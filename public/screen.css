@@ -49,6 +49,10 @@ table {
 
 body {
   overflow: hidden;
+  font-family: sans-serif;
+}
+audio {
+  font-size: 20px;
 }
 #background {
   position: absolute;
@@ -66,4 +70,19 @@ body {
 }
 #player:hover {
   opacity: 1.0;
+}
+
+#content {
+  font-size: 48px;
+  margin-top: 96px;
+  padding-bottom: 0.2em;
+  margin: 0 auto;
+  color: white;
+  text-align: center;
+  width: 80%;
+  background: rgba(0,100,100,0.75);
+  opacity: 0.8;
+}
+#content.title {
+  font-size: 200%;
 }
