@@ -28,8 +28,8 @@ get "/" do
   slim :index
 end
 
-get "/track/:track" do
-  @track_id   = params["track"].to_i
+get "/track/:artist/:track" do
+  @track_id   = soundcloud.resolve(params["artist"], params["track"])
   @track_info = soundcloud.track(@track_id)
   @comments   = soundcloud.clean_comments(@track_id)
   @comments.unshift(
@@ -41,11 +41,6 @@ get "/track/:track" do
   stream      = soundcloud.auth(@track_info["stream_url"])
   @stream_src = HTTP.head(stream)["Location"]
   slim :track
-end
-
-get "/track/:artist/:song" do
-  track_id = soundcloud.resolve(params["artist"], params["song"])
-  redirect "/track/#{track_id}"
 end
 
 get "/flickr/*" do
