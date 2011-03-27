@@ -5,6 +5,8 @@ require "cgi"
 module Flickr
   class API
     BASE = "http://api.flickr.com/services/rest/"
+    BLANK = "/blank.gif"
+    SIZES = ["Small", "Medium", "Medium 640", "Large", "Original"]
 
     def initialize(api_key)
       @api_key = api_key
@@ -16,13 +18,13 @@ module Flickr
         :api_key => @api_key,
         :photo_id => photo_id_from_url(url)
       ))
-      Nokogiri::XML(res.body).search("rsp sizes size").select{ |n|
-        n.attribute("label").value == "Original"
+      Nokogiri::XML(res.body).search("rsp sizes size").sort_by{ |n|
+        SIZES.index(n.attribute("label").value) || 0
       }.map{ |n|
         n.attribute("source").value
-      }.first
+      }.tap{ |n| p n }.last || BLANK
     rescue RestClient::Exception => e
-      "/blank.gif"
+      BLANK
     end
 
     def photo_id_from_url(url)

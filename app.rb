@@ -41,7 +41,7 @@ get "/track/:artist/:song" do
 end
 
 get "/flickr/*" do
-  redirect to(flickr.original_image(params[:splat].first))
+  flickr.original_image(params[:splat].first)
 end
 
 get "/track-info/:track" do

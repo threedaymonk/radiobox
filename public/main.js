@@ -41,6 +41,13 @@ $('document').ready(function(){
 
   flickrSet.poll('#player', function(cs) {
     console.log(["flickr", cs]);
+    $.ajax({
+      url: '/flickr/' + cs[0].body,
+      success: function(data){
+        console.log(data);
+        $('#background')[0].setAttribute('src', data);
+      }
+    });
   }, 500);
 
   commentSet.poll('#player', function(cs) {
