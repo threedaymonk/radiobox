@@ -26,6 +26,7 @@ module Soundcloud
       comments.select{ |c|
         Soundcloud::UserWhitelist.include?(c["user"]["username"])
       }.map{ |c| {
+        :id => c["id"],
         :body => body(c["body"]),
         :type => type(c["body"]),
         :timestamp => c["timestamp"]
