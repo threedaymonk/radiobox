@@ -1,7 +1,7 @@
-h1 = @track_info["title"] + " by " + @track_info["user"]["username"]
-
 audio id="player" src="#{{@stream_src}}" controls="controls" preload="auto" autobuffer="autobuffer"
 
 script == "comments = " + JSON.dump(@comments)
 
 img#background src="/blank.gif"
+
+div#content
