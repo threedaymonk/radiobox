@@ -3,7 +3,11 @@ GEM
   specs:
     dalli (1.0.3)
     json (1.4.6)
+    mime-types (1.16)
+    nokogiri (1.4.4)
     rack (1.2.2)
+    rest-client (1.6.1)
+      mime-types (>= 1.16)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.2.1)
@@ -21,6 +25,8 @@ PLATFORMS
 DEPENDENCIES
   dalli
   json
+  nokogiri
+  rest-client
   shotgun
   sinatra
   slim

@@ -6,10 +6,12 @@ require "sinatra"
 require "slim"
 require "cache"
 require "soundcloud"
+require "flickr"
 require "http"
 
 cache = Cache.new(`git log | head -n 1 | cut -d' ' -f 2`)
 soundcloud = cache.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))
+flickr = cache.wrap(Flickr::API.new(ENV["FLICKR_API_KEY"]))
 
 ENV["SOUNDCLOUD_USER_WHITELIST"].split(/ /).each do |user|
   Soundcloud::UserWhitelist.add user
@@ -41,6 +43,10 @@ get "/stream/:track" do
   track    = soundcloud.track(track_id)
   stream   = soundcloud.auth(track["stream_url"])
   redirect HTTP.head(stream)["Location"]
+end
+
+get "/flickr/*" do
+  redirect to(flickr.original_image(params[:splat].first))
 end
 
 get "/track-info/:track" do

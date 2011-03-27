@@ -26,7 +26,7 @@ module Soundcloud
       comments.select{ |c|
         Soundcloud::UserWhitelist.include?(c["user"]["username"])
       }.map{ |c| {
-        :body => c["body"],
+        :body => body(c["body"]),
         :type => type(c["body"]),
         :timestamp => c["timestamp"]
       }}
@@ -38,8 +38,18 @@ module Soundcloud
         :flickr
       when /dbpedia.org/
         :dbpedia
+      when %r{https?://}
+        :link
       else
         :text
+      end
+    end
+
+    def body(comment)
+      if m = comment.match(%r!https?://[^\s'"]+!)
+        m[0]
+      else
+        comment
       end
     end
 
