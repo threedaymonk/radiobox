@@ -39,6 +39,8 @@ module Soundcloud
         :flickr
       when /dbpedia.org/
         :dbpedia
+      when /wikipedia.org/
+        :wikipedia
       when %r{https?://}
         :link
       else

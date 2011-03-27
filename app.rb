@@ -8,6 +8,7 @@ require "cache"
 require "soundcloud"
 require "flickr"
 require "http"
+require "wikipedia"
 
 cache = Cache.new(`git log | head -n 1 | cut -d' ' -f 2`)
 soundcloud = cache.wrap(Soundcloud::API.new(ENV["SOUNDCLOUD_CLIENT_ID"]))

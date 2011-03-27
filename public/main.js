@@ -82,10 +82,22 @@ $('document').ready(function(){
 
   commentSet.poll('#player', function(cs) {
     console.log(["comment", cs]);
-    var elements = $('#content');
-    elements.attr('class', cs[0].type);
-    elements.text(cs[0].body);
-    centerContent();
+    switch (cs[0].type) {
+      case "wikipedia":
+        $.ajax({
+          url: '/wikipedia/' + cs[0].body,
+          success: function(data){
+            console.log(data);
+            $('#content').text(data).attr('class', cs[0].type);
+          }
+        });
+        break;
+      default:
+        var elements = $('#content');
+        elements.attr('class', cs[0].type);
+        elements.text(cs[0].body);
+        centerContent();
+    }
   }, 500);
 
   $(window).resize(centerContent);
