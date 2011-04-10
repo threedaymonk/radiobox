@@ -50,6 +50,7 @@ table {
 body {
   overflow: hidden;
   font-family: sans-serif;
+  background: rgba(0,0,0,0.8);
 }
 audio {
   font-size: 20px;
@@ -83,8 +84,11 @@ audio {
   opacity: 0.8;
   -webkit-border-radius: 0.2em;
 }
-#content.title {
+#content.title, #content.loading {
   font-size: 200%;
+}
+#content.loading {
+  background: rgba(0,0,0,0.75);
 }
 #content.dbpedia,
 #content.wikipedia {

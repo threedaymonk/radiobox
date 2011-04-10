@@ -52,14 +52,26 @@ $('document').ready(function(){
 
   Resolver.prototype.resolve = function(comment, callback){
     var cached = this._cache[comment.id];
-    if (cached) {
+    if (cached === null) {
       callback(cached);
     } else {
+      this._cache[comment.id] = null;
       this.fetch(comment, function(data){
+        console.log("received " + comment.id + " : " + data);
         this._cache[comment.id] = data;
         callback(data);
       }.bind(this));
     }
+  };
+
+  Resolver.prototype.completed = function(){
+    return _.reduce(_.keys(this._cache), function(a, k){
+      return a + (this._cache[k] === null ? 0 : 1);
+    }.bind(this), 0);
+  };
+
+  Resolver.prototype.total = function(){
+    return _.keys(this._cache).length;
   };
 
   var backgroundImageSet = new CommentSet(_.select(window.RadioBox.comments, function(a){
@@ -73,14 +85,18 @@ $('document').ready(function(){
   var resolver = new Resolver();
 
   backgroundImageSet.each(function(comments){
-    resolver.resolve(comments[0], function(data){
-      var im = new Image();
-      $(im).attr('src', data);
+    _.each(comments, function(comment){
+      resolver.resolve(comment, function(data){
+        var im = new Image();
+        $(im).attr('src', data);
+      });
     });
   });
 
   commentSet.each(function(comments){
-    resolver.resolve(comments[0], function(){});
+    _.each(comments, function(comment){
+      resolver.resolve(comment, function(){});
+    });
   });
 
   var setBackgroundScale = function(){
@@ -101,17 +117,6 @@ $('document').ready(function(){
     }
   };
 
-  backgroundImageSet.poll('#player', function(cs) {
-    var comment = cs[0];
-    resolver.resolve(comment, function(data){
-      var im = new Image();
-      $(im).load(function(){
-        $('#background').attr('src', data);
-        setTimeout(setBackgroundScale, 1);
-      }).attr('src', data);
-    });
-  }, 500);
-
   var centerContent = function() {
     $('body').css('font-size', $(window).height() / 16 + 'px');
     var el = $('#content');
@@ -120,13 +125,40 @@ $('document').ready(function(){
        css('top',  (($(window).height() / 2) - (el.height() / 2)) + "px");
   };
 
-  commentSet.poll('#player', function(cs) {
-    var comment = cs[0];
-    resolver.resolve(comment, function(data){
-      $('#content').text(data).attr('class', comment.type);
-      centerContent();
-    });
-  }, 500);
+  var start = function(){
+    backgroundImageSet.poll('#player', function(cs) {
+      var comment = cs[0];
+      resolver.resolve(comment, function(data){
+        var im = new Image();
+        $(im).load(function(){
+          $('#background').attr('src', data);
+          setTimeout(setBackgroundScale, 1);
+        }).attr('src', data);
+      });
+    }, 500);
+
+    commentSet.poll('#player', function(cs) {
+      var comment = cs[0];
+      resolver.resolve(comment, function(data){
+        $('#content').text(data).attr('class', comment.type);
+        centerContent();
+      });
+    }, 500);
+  };
+
+  var pollReady = function(){
+    var n = resolver.completed();
+    var d = resolver.total();
+    console.log([n, d]);
+    if (n < d) {
+      setTimeout(pollReady, 500);
+      $('#content span').text(Math.round((n * 100) / d));
+    } else {
+      start();
+    }
+  };
+  centerContent();
+  pollReady();
 
   $(window).resize(centerContent);
   $(window).resize(setBackgroundScale);
