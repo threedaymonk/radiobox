@@ -62,7 +62,7 @@ $('document').ready(function(){
     }
   };
 
-  var flickrSet = new CommentSet(_.select(window.RadioBox.comments, function(a){
+  var backgroundImageSet = new CommentSet(_.select(window.RadioBox.comments, function(a){
     return a.type === "flickr";
   }));
 
@@ -72,7 +72,7 @@ $('document').ready(function(){
 
   var resolver = new Resolver();
 
-  flickrSet.each(function(comments){
+  backgroundImageSet.each(function(comments){
     resolver.resolve(comments[0], function(data){
       var im = new Image();
       $(im).attr('src', data);
@@ -101,7 +101,7 @@ $('document').ready(function(){
     }
   };
 
-  flickrSet.poll('#player', function(cs) {
+  backgroundImageSet.poll('#player', function(cs) {
     var comment = cs[0];
     resolver.resolve(comment, function(data){
       var im = new Image();
