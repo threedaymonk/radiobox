@@ -62,11 +62,11 @@ $('document').ready(function(){
     }
   };
 
-  var flickrSet = new CommentSet(_.select(window.comments, function(a){
+  var flickrSet = new CommentSet(_.select(window.RadioBox.comments, function(a){
     return a.type === "flickr";
   }));
 
-  var commentSet = new CommentSet(_.select(window.comments, function(a){
+  var commentSet = new CommentSet(_.select(window.RadioBox.comments, function(a){
     return a.type !== "flickr";
   }));
 

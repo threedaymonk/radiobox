@@ -1,6 +1,6 @@
 audio id="player" src="#{{@stream_src}}" controls="controls" preload="auto" autobuffer="autobuffer"
 
-script == "comments = " + JSON.dump(@comments)
+script == "var RadioBox = {}; RadioBox.comments = " + JSON.dump(@comments)
 
 img#background src="/blank.gif"
 
