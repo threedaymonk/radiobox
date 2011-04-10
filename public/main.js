@@ -57,7 +57,6 @@ $('document').ready(function(){
     } else {
       this._cache[comment.id] = null;
       this.fetch(comment, function(data){
-        console.log("received " + comment.id + " : " + data);
         this._cache[comment.id] = data;
         callback(data);
       }.bind(this));
@@ -149,7 +148,6 @@ $('document').ready(function(){
   var pollReady = function(){
     var n = resolver.completed();
     var d = resolver.total();
-    console.log([n, d]);
     if (n < d) {
       setTimeout(pollReady, 500);
       $('#content span').text(Math.round((n * 100) / d));
