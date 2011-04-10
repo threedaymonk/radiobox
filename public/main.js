@@ -53,12 +53,13 @@ $('document').ready(function(){
   Resolver.prototype.resolve = function(comment, callback){
     var cached = this._cache[comment.id];
     if (cached === null) {
-      callback(cached);
+      callback(cached, function(){});
     } else {
       this._cache[comment.id] = null;
       this.fetch(comment, function(data){
-        this._cache[comment.id] = data;
-        callback(data);
+        callback(data, function(){
+          this._cache[comment.id] = data;
+        }.bind(this));
       }.bind(this));
     }
   };
@@ -85,16 +86,17 @@ $('document').ready(function(){
 
   backgroundImageSet.each(function(comments){
     _.each(comments, function(comment){
-      resolver.resolve(comment, function(data){
+      resolver.resolve(comment, function(data, complete){
         var im = new Image();
         $(im).attr('src', data);
+        $(im).load(complete);
       });
     });
   });
 
   commentSet.each(function(comments){
     _.each(comments, function(comment){
-      resolver.resolve(comment, function(){});
+      resolver.resolve(comment, function(data, complete){ complete() });
     });
   });
 
