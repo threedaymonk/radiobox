@@ -127,6 +127,8 @@ $('document').ready(function(){
   };
 
   var start = function(){
+    $('#player')[0].play();
+
     backgroundImageSet.poll('#player', function(cs) {
       var comment = cs[0];
       resolver.resolve(comment, function(data){
